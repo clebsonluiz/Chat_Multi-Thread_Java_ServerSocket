@@ -38,7 +38,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
  * 
  * @version 1.0
  * 
- * Inspirado no tutorial de Multi-Chat com Sockets do Devmedia 
+ * @Descricao Inspirado no tutorial de Multi-Chat com Sockets do Devmedia 
  * 
  * @see
  * <a href = "https://www.devmedia.com.br/como-criar-um-chat-multithread-com-socket-em-java/33639">
@@ -47,10 +47,16 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class Servidor extends Thread{
 	
+	/**
+	 * Classe {@code TelaInterruptor} é uma Janela que alem de fechar o servidor</br>
+	 * Ela contém o log dos Clientes que se conectam ao servidor
+	 * 
+	 * */
 	static class TelaInterruptor extends JFrame{
 		
 		static final long serialVersionUID = 1L;
 		
+		// textArea exibe os logs de conexão que ocorrem no servidor
 		private JTextArea textArea;
 		
 		public TelaInterruptor(String porta) {
@@ -99,6 +105,8 @@ public class Servidor extends Thread{
 			setVisible(true);
 		}
 		
+		//Sempre que ouver uma nova conexão no servidor, 
+		//o metodo é invocado e atualiza o textArea
 		void novaConexao(String msg) {
 			textArea.append("<Ouve uma requisição> \r\n");
 			textArea.append("Dados do socket: "+ msg + "\r\n\n");
@@ -106,7 +114,10 @@ public class Servidor extends Thread{
 		}
 	}
 	
-	
+	/**
+	 * Classe {@code TelaServidor} requisita a porta a qual o servidor irá iniciar</br>
+	 * Seus devidos eventos estão no metodo {@code main}
+	 * */
 	static class TelaServidor extends JFrame{
 		
 		private static final long serialVersionUID = 1L;
@@ -121,9 +132,8 @@ public class Servidor extends Thread{
 			setResizable(false);
 			setLocationRelativeTo(null);
 			
-			textField = new JTextField();
+			textField = new JTextField(16);
 			textField.setHorizontalAlignment(JTextField.CENTER);
-			textField.setColumns(16);
 			
 			btnSelecionarPorta = new JButton("Selecionar porta");
 
@@ -134,6 +144,11 @@ public class Servidor extends Thread{
 		}
 	}
 	
+	
+	/**
+	 * Classe {@code Usuario} serve para armazenar as informações dos clientes</br>
+	 * que se conectam ao servidor.
+	 * */
 	public class Usuario {
 		
 		String nome;
@@ -155,7 +170,15 @@ public class Servidor extends Thread{
 		}
 	}
 	
+	/**
+	 * {@code static List<Usuario> clientes = new ArrayList<>();}
+	 * </br>Armazena todos os clientes que estão conectados ao servidor
+	 * </br>Assim quando um cliente se desconecta, é removido da Lista e 
+	 * </br>então a quantidade de Clientes conectados são atualizadas
+	 * */
 	static List<Usuario> clientes = new ArrayList<>();
+	
+	//Conta quantos clientes se encontram online no servidor
 	static int online = 0;
 	
 	public Servidor(Socket socket) throws IOException {
@@ -163,10 +186,11 @@ public class Servidor extends Thread{
 		clientes.add(user);
 	}
 	
+	//notifica ao outros clientes quantos se encontram online de acordo com a mensagem
 	private void atualizarChatOnline(String msg) throws IOException {
 		if(msg.equals(Cliente.ONLINE))	online = online + 1;
 		else if(msg.equals(Cliente.OFFLINE))	online = online - 1;
-		
+
 		for(Usuario cliente: clientes) 
 			if(cliente.socket.isConnected())
 				if(!cliente.socket.isClosed()) {
@@ -175,6 +199,11 @@ public class Servidor extends Thread{
 				}
 	}
 	
+	/*
+	 * Atualiza quantas pessoas estão conectadas ao servidor. De acordo com a
+	 * mensagem de um usuario Se um usuario se desconecta ele é removido do servidor
+	 * e todos os outros são avisados
+	 */
 	private void atualizarChatConectado(Usuario usuario,String msg) throws IOException {
 		if(msg.equals(Cliente.CONECTADO)) {
 			
@@ -203,6 +232,7 @@ public class Servidor extends Thread{
 		}
 	}
 	
+	//Metodo que envia uma mensagem de um Cliente(usuario) para os outros Clientes
 	public void atualizarChat(Usuario usuario, String msg) throws IOException {
 		for(Usuario cliente: clientes) {
 			if(cliente.socket.isConnected()) {
@@ -222,6 +252,8 @@ public class Servidor extends Thread{
 		}
 	}
 	
+	/* Metodo da Thread da Classe Servidor para varrer as mensagens de um usuario
+	 * para notificar os outros*/
 	@Override
 	public void run() {
 		try {
@@ -242,6 +274,13 @@ public class Servidor extends Thread{
 		}
 	}
 	
+	
+	/**
+	 * Metodo principal da classe ({@code main}), Aqui é executado a aplicação Servidor
+	 * </br>Contendo as Threads das conexões dentro de uma outra Thread Anônima
+	 * </br>de forma paralela para não atrapalhar as funcionalidades da Classe
+	 * </br>{@code TelaInterruptor}.
+	 * */
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		
@@ -260,6 +299,7 @@ public class Servidor extends Thread{
 				
 				TelaInterruptor telaInterruptor = new TelaInterruptor("Porta :"+porta);
 				
+				//Thread anônima que executa as as operações de novas conexões ao servidor
 				new Thread(() -> {
 					while (true) {
 						try {

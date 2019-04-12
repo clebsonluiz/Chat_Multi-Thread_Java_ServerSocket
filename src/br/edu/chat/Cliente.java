@@ -43,7 +43,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
  * 
  * @version 1.0
  * 
- * Inspirado no tutorial de Multi-Chat com Sockets do Devmedia 
+ * @Descricao Inspirado no tutorial de Multi-Chat com Sockets do Devmedia 
  * 
  * @see
  * <a href = "https://www.devmedia.com.br/como-criar-um-chat-multithread-com-socket-em-java/33639">
@@ -59,6 +59,13 @@ public class Cliente{
 	public static final String NAO_DIGITANDO = "<!no_dig...!>";
 	public static final String ERR_SERVIDOR = "<!Err...servidor!>";
 	
+	
+	/**
+	 * Tela de seleção de servidor e nome do cliente que será exibido no Chat</br>
+	 * O evento ActionListener se encontra no metodo principal {@code main} da classe</br>
+	 * A janela apresenta três campos para serem preechidos (porta do servidor, 
+	 * ip do servidor e nome do cliente)
+	 * */
 	static class TelaConexaoServidor extends JFrame {
 
 		private static final long serialVersionUID = 1L;
@@ -108,128 +115,148 @@ public class Cliente{
 
 	}
 	
-	 static class TelaChat extends JFrame {
+	/**
+	 * 
+	 * Classe {@code TelaChat}, Janela de Chat onde os clientes conectados ao mesmo servidor
+	 * </br>Podem trocar mensagens de texto entre uma mesma rede local. Os eventos se<br>
+	 * encontram no metodo {@code adicionarEventos() } logo após o construtor de 
+	 * {@code Cliente}.
+	 * */
+	static class TelaChat extends JFrame {
 
-			private static final long serialVersionUID = 1L;
-			
-			private JTextField _textField;
-			private JButton _btnEnviar;
-			private JButton _btnSair;
-			private JTextArea _textArea;
-			private JLabel _labelConectados;
-			private JLabel _labelOnline;
-			private JLabel _labelSituacao;
+		private static final long serialVersionUID = 1L;
 
-			public TelaChat(String nome) {
-				super(nome);
-				setSize(450, 360);
-				JPanel panel = new JPanel(null);
-				panel.setBorder(BorderFactory.createTitledBorder("Campo de Texto"));
-				panel.setPreferredSize(new Dimension(400, 80));
-				add(panel, BorderLayout.SOUTH);
-				
-				_textField = new JTextField(18);
-				_textField.setBounds(18, 28, 274, 38);
-				panel.add(_textField);
-				
-				_btnEnviar = new JButton("Enviar");
-				_btnEnviar.setBounds(304, 28, 62, 38);
-				panel.add(_btnEnviar);
-				
-				_btnSair = new JButton("Sair");
-				_btnSair.setBounds(367, 28, 50, 38);
-				panel.add(_btnSair);
-				
-				JPanel panel_1 = new JPanel(null);
-				panel_1.setPreferredSize(new Dimension(400, 100));
-				panel_1.setBorder(BorderFactory.createTitledBorder("Status do Chat"));
-				add(panel_1, BorderLayout.NORTH);
-				
-				JPanel panel_2 = new JPanel(new BorderLayout(0, 0));
-				panel_2.setBorder(BorderFactory.createTitledBorder("Conectados"));
-				panel_2.setBounds(8, 21, 88, 70);
-				panel_1.add(panel_2);
-				
-				_labelConectados = new JLabel("1");
-				_labelConectados.setHorizontalAlignment(SwingConstants.CENTER);
-				_labelConectados.setFont(new Font("Arial", Font.BOLD, 26));
-				_labelConectados.setForeground(Color.RED);
-				panel_2.add(_labelConectados);
-				
-				JPanel panel_3 = new JPanel(new BorderLayout(0, 0));
-				panel_3.setBorder(BorderFactory.createTitledBorder("Online"));
-				panel_3.setBounds(108, 21, 78, 70);
-				panel_1.add(panel_3);
-				
-				_labelOnline = new JLabel("0");
-				_labelOnline.setHorizontalAlignment(SwingConstants.CENTER);
-				_labelOnline.setForeground(Color.RED);
-				_labelOnline.setFont(new Font("Arial", Font.BOLD, 26));
-				panel_3.add(_labelOnline);
-				
-				JPanel panel_4 = new JPanel(new BorderLayout(0, 0));
-				panel_4.setBorder(BorderFactory.createTitledBorder("Situação do Chat"));
-				panel_4.setBounds(197, 20, 225, 70);
-				panel_1.add(panel_4);
-				
-				_labelSituacao = new JLabel("Nada acontecendo");
-				_labelSituacao.setHorizontalAlignment(SwingConstants.CENTER);
-				_labelSituacao.setForeground(Color.RED);
-				_labelSituacao.setFont(new Font("Arial", Font.BOLD, 18));
-				panel_4.add(_labelSituacao, BorderLayout.CENTER);
-				
-				JScrollPane scrollPane = new JScrollPane(_textArea);
-				scrollPane.setBorder(BorderFactory.createTitledBorder(
-						BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
-						"Chat",
-						TitledBorder.CENTER,
-						TitledBorder.DEFAULT_POSITION));
-				add(scrollPane, BorderLayout.CENTER);
-				
-				_textArea = new JTextArea();
-				_textArea.setEditable(false);
-				_textArea.setBackground(new Color(245, 245, 245));
-				_textArea.setLineWrap(true);
-				_textArea.setWrapStyleWord(true);
-				
-				setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				setVisible(true);
-			}
+		private JTextField _textField;
+		private JButton _btnEnviar;
+		private JButton _btnSair;
+		private JTextArea _textArea;
+		private JLabel _labelConectados;
+		private JLabel _labelOnline;
+		private JLabel _labelSituacao;
 
-			public void atualizarLabelConectados(String conectado) {
-				int novo = Integer.parseInt(conectado);
-				
-				if(novo <= 1)
-					_labelConectados.setForeground(Color.red);
-				else
-					_labelConectados.setForeground(Color.blue);
-				_labelConectados.setText(conectado);
-			}
+		public TelaChat(String nome) {
+			super(nome);
+			setSize(450, 360);
+			JPanel panel = new JPanel(null);
+			panel.setBorder(BorderFactory.createTitledBorder("Campo de Texto"));
+			panel.setPreferredSize(new Dimension(400, 80));
+			add(panel, BorderLayout.SOUTH);
+
+			_textField = new JTextField(18);
+			_textField.setBounds(18, 28, 274, 38);
+			panel.add(_textField);
+
+			_btnEnviar = new JButton("Enviar");
+			_btnEnviar.setBounds(304, 28, 62, 38);
+			panel.add(_btnEnviar);
+
+			_btnSair = new JButton("Sair");
+			_btnSair.setBounds(367, 28, 50, 38);
+			panel.add(_btnSair);
+
+			JPanel panel_1 = new JPanel(null);
+			panel_1.setPreferredSize(new Dimension(400, 100));
+			panel_1.setBorder(BorderFactory.createTitledBorder("Status do Chat"));
+			add(panel_1, BorderLayout.NORTH);
+
+			JPanel panel_2 = new JPanel(new BorderLayout(0, 0));
+			panel_2.setBorder(BorderFactory.createTitledBorder("Conectados"));
+			panel_2.setBounds(8, 21, 88, 70);
+			panel_1.add(panel_2);
+
+			_labelConectados = new JLabel("1");
+			_labelConectados.setHorizontalAlignment(SwingConstants.CENTER);
+			_labelConectados.setFont(new Font("Arial", Font.BOLD, 26));
+			_labelConectados.setForeground(Color.RED);
+			panel_2.add(_labelConectados);
+
+			JPanel panel_3 = new JPanel(new BorderLayout(0, 0));
+			panel_3.setBorder(BorderFactory.createTitledBorder("Online"));
+			panel_3.setBounds(108, 21, 78, 70);
+			panel_1.add(panel_3);
+
+			_labelOnline = new JLabel("0");
+			_labelOnline.setHorizontalAlignment(SwingConstants.CENTER);
+			_labelOnline.setForeground(Color.RED);
+			_labelOnline.setFont(new Font("Arial", Font.BOLD, 26));
+			panel_3.add(_labelOnline);
+
+			JPanel panel_4 = new JPanel(new BorderLayout(0, 0));
+			panel_4.setBorder(BorderFactory.createTitledBorder("Situação do Chat"));
+			panel_4.setBounds(197, 20, 225, 70);
+			panel_1.add(panel_4);
+
+			_labelSituacao = new JLabel("Nada acontecendo");
+			_labelSituacao.setHorizontalAlignment(SwingConstants.CENTER);
+			_labelSituacao.setForeground(Color.RED);
+			_labelSituacao.setFont(new Font("Arial", Font.BOLD, 18));
+			panel_4.add(_labelSituacao, BorderLayout.CENTER);
 			
-			public void atualizarLabelOnline(String online) {
-				
-				int novo = Integer.parseInt(online);
-				
-				if(novo <= 1)
-					_labelOnline.setForeground(Color.red);
-				else
-					_labelOnline.setForeground(Color.green);
-				_labelOnline.setText(online);
-			}
+			_textArea = new JTextArea();
+			_textArea.setEditable(false);
+			_textArea.setBackground(new Color(245, 245, 245));
+			_textArea.setLineWrap(true);
+			_textArea.setWrapStyleWord(true);
 			
-			public void atualizarLabelSituacao(String status) {
-				if(status.equals(Cliente.DIGITANDO))
-					_labelSituacao.setText("Algem está digitando...");
-				else
-					_labelSituacao.setText("Nada acontecendo");
-			}	
-	
-	 }
-	
-	
-	
-	
-	
+			JScrollPane scrollPane = new JScrollPane(_textArea);
+			scrollPane.setBorder(BorderFactory.createTitledBorder(
+					BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
+					"Chat",
+					TitledBorder.CENTER,
+					TitledBorder.DEFAULT_POSITION));
+			add(scrollPane, BorderLayout.CENTER);
+
+			
+
+			setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			setVisible(true);
+		}
+
+		/**
+		 * Metodo que atualiza o numero de clientes conectados na tela do Chat
+		 * @param conectado O numero no formato String de quantas pessoas estão conectadas.
+		 * */
+		public void atualizarLabelConectados(String conectado) {
+			int novo = Integer.parseInt(conectado);
+
+			if(novo <= 1)
+				_labelConectados.setForeground(Color.red);
+			else
+				_labelConectados.setForeground(Color.blue);
+			_labelConectados.setText(conectado);
+		}
+		/**
+		 * Metodo que atualiza o numero de clientes online na tela do Chat
+		 * @param conectado O numero no formato String de quantas pessoas estão online.
+		 * */
+		public void atualizarLabelOnline(String online) {
+
+			int novo = Integer.parseInt(online);
+
+			if(novo <= 1)
+				_labelOnline.setForeground(Color.red);
+			else
+				_labelOnline.setForeground(Color.green);
+			_labelOnline.setText(online);
+		}
+
+		/**
+		 * Metodo que atualiza a situaçao na tela do Chat, caso algum cliente esteja</br>
+		 * digitando, todos os demais terão suas situações alteradas
+		 * @param status String da situação da tela de chat
+		 * */
+		public void atualizarLabelSituacao(String status) {
+			if(status.equals(Cliente.DIGITANDO))
+				_labelSituacao.setText("Algem está digitando...");
+			else
+				_labelSituacao.setText("Nada acontecendo");
+		}	
+	}
+
+	/*
+	 *Atributos principais da Classe cliente 
+	 *Cada cliente tem sua tela de Chat.
+	 */
 	
 	private TelaChat telaChat;
 	private Socket socket;
@@ -245,6 +272,7 @@ public class Cliente{
 		telaChat = new TelaChat(nome);
 	}
 	
+	//Eventos da telaChat. 
 	public void adicionarEventos() {
 		
 		telaChat.addWindowListener(new WindowAdapter() {
@@ -273,9 +301,7 @@ public class Cliente{
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER)
-					try {
-						enviar(telaChat._textField.getText());
-					} catch (IOException ex) {}
+					try { enviar(telaChat._textField.getText()); } catch (IOException ex) {}
 				else
 					try { enviar(DIGITANDO); } catch (IOException ex) {}
 			}
@@ -295,6 +321,11 @@ public class Cliente{
 		});
 	}
 	
+	
+	/* Metodo usado para conectar o Cliente ao servidor.
+	 * O cliente manda seu nome e então o servidor ao adicionar
+	 * um cliente novo cria um usuario e adiciona na List clientes
+	 * */
 	public void conectar() throws IOException {
 		outputStream = socket.getOutputStream();
 		outputStreamWriter = new OutputStreamWriter(outputStream);
@@ -303,6 +334,10 @@ public class Cliente{
 		bufferedWriter.flush();
 	}
 	
+	/*	Metodo usado para enviar uma mensagem ao servidor. 
+		Depedendo do tipo de mensagem o servidor irá trabalhar de forma diferente
+		para notificar os outros usuarios/clientes
+		*/
 	public void enviar(String msg) throws IOException {
 
 		if (!socket.isClosed()) {
@@ -329,6 +364,7 @@ public class Cliente{
 		}
 	}
 	
+	//Metodo usado para exibir no chat que um novo cliente se conectou ou saiu do servidor
 	private void atualizarConectados(String msg) {
 		String string[] = msg.split(":");
 		if(msg.contains(CONECTADO))
@@ -338,11 +374,16 @@ public class Cliente{
 		telaChat.atualizarLabelConectados(string[2]);
 	}
 	
+	//Metodo usado para mudar o label de pessoas Online 
 	private void atualizarOnline(String msg) {
 		String string[] = msg.split(":");
 		telaChat.atualizarLabelOnline(string[1]);
 	}
 	
+	/* Metodo que fica executando na Thread, um Cliente fica "ouvindo"
+	 * constantemente alguma mensagem do servidor. 
+	 * Por Ex: um outro cliente enviou uma mensagem
+	 */
 	public void ouvir() throws IOException {
 		
 		inputStream = socket.getInputStream();
@@ -378,6 +419,10 @@ public class Cliente{
 		telaChat._textArea.append("Você Saiu do Chat \r\n");
 	}
 	
+	
+	/* Metodo que quando invocado avisa que o cliente atual da Thread
+	 * se desconectou e Fecha todas as conexões
+	 * de leitura e saida que estao abertas.*/
 	public void sair() throws IOException {
 		enviar(DESCONECTADO);
 		outputStream.close();;
@@ -389,6 +434,12 @@ public class Cliente{
 		socket.close();
 	}
 	
+	/**
+	 * Metodo {@code main} da classe principal, O loop do ouvinte fica em outra Thread </br>
+	 * Anônima para que a tela de chat não sofra interferencias na Thread Principal</br>
+	 * Quando a aplicação é executada com sucesso, o cliente notifica atravez do</br>
+	 * {@code cliente.enviar(CONECTADO)} Que este acaba de se conectar ao chat.
+	 * */
 	public static void main(String[] args) {
 		
 		try {
@@ -406,8 +457,7 @@ public class Cliente{
 			String porta = telaConexaoServidor._portaField.getText();
 			String host = telaConexaoServidor._localServerField.getText();
 			
-			if(nome.trim().equals("") 
-					|| porta.trim().equals("") || host.trim().equals(""))
+			if(nome.trim().equals("") || porta.trim().equals("") || host.trim().equals(""))
 				Mensagem.aviso("Algum campo se encontra vazio");
 			
 			else {
@@ -421,16 +471,9 @@ public class Cliente{
 					cliente.adicionarEventos();
 					cliente.conectar();
 					
-					Runnable r = new Runnable() {
-						@Override
-						public void run() {
-							try {
-								cliente.ouvir();
-							} catch (IOException e) {}
-						}
-					};
-					
-					new Thread(r).start();
+					new Thread(()-> {
+						try { cliente.ouvir(); } catch (IOException e) {}
+					}).start();
 					
 					cliente.enviar(CONECTADO);
 					
